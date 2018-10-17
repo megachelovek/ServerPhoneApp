@@ -2,37 +2,31 @@ package DAO;
 
 
 import Phonebook.PhoneBook;
-;
-import java.util.ArrayList;
+
 import java.util.List;
 
 
-public abstract class PhoneAppDAO implements IPhoneAppDAO{
+public interface PhoneAppDAO {
 
-  private List<PhoneBook> phonebooks = new ArrayList<PhoneBook>();
+  String _ID = "_id";
 
-  public PhoneAppDAO() {
-    phonebooks.add(new PhoneBook("John", 11111,"john@domain.com"));
-    phonebooks.add(new PhoneBook("Susan",222222, "susan@domain.com"));
-  }
+  String NAME = "name";
 
-  public List<PhoneBook> getAll() {
-    return phonebooks;
-  }
+  String PHONENUMBER = "phonenumber";
 
-  public void save(PhoneBook phonebook) {
-    phonebooks.add(phonebook);
-  }
-
-  public void update(PhoneBook phonebook, String[] params) {
-    phonebook.setName(params[0]);
-    phonebook.setPhone(Integer.parseInt(params[1]));
-    phonebook.setEmail(params[2]);
-    phonebooks.add(phonebook);
-  }
+  String EMAIL = "email";
 
 
-  public void delete(PhoneBook phonebook) {
-    phonebooks.remove(phonebook);
-  }
+  void addPhoneBook(PhoneBook phonebook);
+
+  List<PhoneBook> getPhoneBooks();
+
+  PhoneBook getPhoneBookNumber(Long phonenumber);
+
+  PhoneBook getPhoneBookId(int _id);
+
+  void updatePhoneBook(PhoneBook phonebook,PhoneBook phonebook2);
+
+  void deletePhoneBook(PhoneBook phonebook);
+
 }
