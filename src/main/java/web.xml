@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<context-param>
+    <param-name>resteasy.resources</param-name>
+    <param-value>Phonebook.JSONService</param-value>
+</context-param>

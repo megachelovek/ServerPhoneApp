@@ -1,21 +1,19 @@
 
 
-import DAO.DAO;
-import DAO.PhoneAppDAO;
-import DAO.PhoneAppDAOimplements;
 import Phonebook.PhoneBook;
+import org.json.simple.JSONArray;
+import org.kohsuke.rngom.util.Uri;
 
+import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowListener;
+import java.io.*;
+import java.net.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import org.postgresql.Driver;
 
 import static com.sun.deploy.uitoolkit.ToolkitStore.dispose;
 
@@ -35,6 +33,7 @@ public class AppForm {
   private JTextField namefield;
   private JTextField emailfield;
   private JTextField phonefield;
+  private JButton ServerOn;
   String name, phone, email;
   String url = "jdbc:postgresql://localhost:5432/PhoneAppServer";
   String login = "postgres";
@@ -47,6 +46,7 @@ public class AppForm {
     //Отображаем контейнер
     jfrm.add(addButton);
     jfrm.add(deleteButton);
+    jfrm.add(ServerOn);
     jfrm.add(namefield);
     jfrm.add(emailfield);
     jfrm.add(phonefield);
@@ -96,6 +96,49 @@ public class AppForm {
           }
         } catch (Exception ex) {
           ex.printStackTrace();
+        }
+
+      }
+    });
+
+    ServerOn.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        //принимаем
+        try (Socket socket = new Socket("192.168.1.34", 2121)) {
+          try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
+            try {
+              Uri uri;
+              uri = (Uri)in.readObject(); //добавить рест
+            } catch (ClassNotFoundException exc) {
+              exc.printStackTrace();
+            }
+          } catch (IOException exc) {
+            exc.printStackTrace();
+          }
+        } catch (UnknownHostException exc) {
+          exc.printStackTrace();
+        } catch (IOException exc) {
+          exc.printStackTrace();
+        }
+
+        //отправляем
+        try (ServerSocket serverSocket = new ServerSocket(2121)) {
+          try (Socket socket = serverSocket.accept();
+               ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+            JSONArray jsonArray = new JSONArray();
+            for (int i=0;i< phoneBooks.size();i++){
+              jsonArray.add(phoneBooks.get(i).toJSONString());
+            }
+            out.writeObject(jsonArray);
+          }
+          catch (IOException exc) {
+            exc.printStackTrace();
+          }
+        }
+        catch (IOException exc) {
+          exc.printStackTrace();
         }
 
       }
@@ -167,7 +210,9 @@ public class AppForm {
       emailfield.setSize(100, 20);
       phonefield.setSize(100, 20);
       jfrm.getContentPane().add(jscrlp);
-      jscrlp.setSize(500,400);
+      jscrlp.setSize(500, 400);
     }
   }
+
+
 }
