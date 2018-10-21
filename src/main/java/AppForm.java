@@ -1,8 +1,11 @@
 
 
+import Phonebook.Client;
 import Phonebook.PhoneBook;
+import Phonebook.Server;
+import com.sun.jndi.toolkit.url.Uri;
 import org.json.simple.JSONArray;
-import org.kohsuke.rngom.util.Uri;
+
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -33,14 +36,21 @@ public class AppForm {
   private JTextField namefield;
   private JTextField emailfield;
   private JTextField phonefield;
+  private JTextField ip_android;
   private JButton ServerOn;
+  private JLabel ip,msg;
   String name, phone, email;
   String url = "jdbc:postgresql://localhost:5432/PhoneAppServer";
   String login = "postgres";
   String password = "admin";
+  String File = "";
+  String Exc = "";
   String[][] rowData;
+  int port =8080;
+  Client client;
+  Server server;
 
-  AppForm() throws SQLException, ClassNotFoundException {
+  AppForm() throws SQLException, ClassNotFoundException, UnknownHostException {
 
     FillTable();
     //Отображаем контейнер
@@ -50,7 +60,11 @@ public class AppForm {
     jfrm.add(namefield);
     jfrm.add(emailfield);
     jfrm.add(phonefield);
+    jfrm.add(ip_android);
+    jfrm.add(ip);
+    //jfrm.add(msg);
     jfrm.setVisible(true);
+    ip_android.setText(String.valueOf(InetAddress.getLocalHost()));
 
     deleteButton.addActionListener(new ActionListener() {
       @Override
@@ -104,9 +118,13 @@ public class AppForm {
     ServerOn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-
         //принимаем
-        try (Socket socket = new Socket("192.168.1.34", 2121)) {
+        client = new Client(ip.getText().toString(),port,Exc);
+        //отправляем
+        server = new Server( File);
+
+       /* //принимаем
+        try (Socket socket = new Socket("localhost", 8080)) {
           try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
             try {
               Uri uri;
@@ -124,7 +142,7 @@ public class AppForm {
         }
 
         //отправляем
-        try (ServerSocket serverSocket = new ServerSocket(2121)) {
+        try (ServerSocket serverSocket = new ServerSocket(8080)) {
           try (Socket socket = serverSocket.accept();
                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
             JSONArray jsonArray = new JSONArray();
@@ -139,7 +157,7 @@ public class AppForm {
         }
         catch (IOException exc) {
           exc.printStackTrace();
-        }
+        }*/
 
       }
     });
@@ -154,6 +172,8 @@ public class AppForm {
         } catch (SQLException e) {
           e.printStackTrace();
         } catch (ClassNotFoundException e) {
+          e.printStackTrace();
+        } catch (UnknownHostException e) {
           e.printStackTrace();
         }
       }
