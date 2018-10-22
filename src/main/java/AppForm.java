@@ -3,8 +3,7 @@
 import Phonebook.Client;
 import Phonebook.PhoneBook;
 import Phonebook.Server;
-import com.sun.jndi.toolkit.url.Uri;
-import org.json.simple.JSONArray;
+
 
 
 import javax.swing.*;

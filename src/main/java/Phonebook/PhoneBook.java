@@ -1,13 +1,12 @@
 package Phonebook;
 
-import org.json.simple.JSONAware;
-import org.json.simple.JSONObject;
+
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PhoneBook implements Serializable, JSONAware {
+public class PhoneBook implements Serializable {
   private Integer Id;
   private String Name;
   private Long Phone;
@@ -51,13 +50,13 @@ public class PhoneBook implements Serializable, JSONAware {
     return Email;
   }
 
-  @Override
+  /*@Override
   public String toJSONString() {
     Map<Object , Object> PhoneBookJsonMap = new HashMap<Object , Object>();
     PhoneBookJsonMap.put("Name",getName());
     PhoneBookJsonMap.put("Phone",getPhone());
     PhoneBookJsonMap.put("Email",getEmail());
     return JSONObject.toJSONString(PhoneBookJsonMap);
-  }
+  }*/
 
 }

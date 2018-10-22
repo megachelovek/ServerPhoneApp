@@ -1,8 +1,5 @@
 package Phonebook;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
