@@ -3,7 +3,8 @@
 import Phonebook.Client;
 import Phonebook.PhoneBook;
 import Phonebook.Server;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 import javax.swing.*;
@@ -42,7 +43,7 @@ public class AppForm {
   String url = "jdbc:postgresql://localhost:5432/PhoneAppServer";
   String login = "postgres";
   String password = "admin";
-  String File = "";
+  String File = null;
   String Exc = "";
   String[][] rowData;
   int port =8080;
@@ -117,48 +118,29 @@ public class AppForm {
     ServerOn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        //принимаем
+/*        //принимаем
         client = new Client(ip.getText().toString(),port,Exc);
         //отправляем
-        server = new Server( File);
+        server = new Server( File);*/
 
-       /* //принимаем
-        try (Socket socket = new Socket("localhost", 8080)) {
-          try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream())) {
-            try {
-              Uri uri;
-              uri = (Uri)in.readObject(); //добавить рест
-            } catch (ClassNotFoundException exc) {
-              exc.printStackTrace();
-            }
-          } catch (IOException exc) {
-            exc.printStackTrace();
-          }
-        } catch (UnknownHostException exc) {
-          exc.printStackTrace();
-        } catch (IOException exc) {
-          exc.printStackTrace();
-        }
 
-        //отправляем
+      //отправляем
         try (ServerSocket serverSocket = new ServerSocket(8080)) {
-          try (Socket socket = serverSocket.accept();
-               ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
-            JSONArray jsonArray = new JSONArray();
-            for (int i=0;i< phoneBooks.size();i++){
-              jsonArray.add(phoneBooks.get(i).toJSONString());
-            }
-            out.writeObject(jsonArray);
-          }
-          catch (IOException exc) {
-            exc.printStackTrace();
-          }
+        try (Socket socket = serverSocket.accept();
+             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+          Gson gson = new GsonBuilder().setPrettyPrinting().create();
+          String json = gson.toJson(phoneBooks);
+          out.writeUTF(json);
         }
-        catch (IOException exc) {
-          exc.printStackTrace();
-        }*/
 
       }
+          catch (IOException exc) {
+        exc.printStackTrace();
+      }
+    }
+
+
+
     });
   }
 
