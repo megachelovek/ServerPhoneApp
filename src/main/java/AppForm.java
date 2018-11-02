@@ -2,6 +2,7 @@
 
 import Phonebook.Client;
 import Phonebook.PhoneBook;
+import Phonebook.RestService;
 import Phonebook.Server;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -49,6 +50,7 @@ public class AppForm {
   int port =8080;
   Client client;
   Server server;
+  RestService restService;
 
   AppForm() throws SQLException, ClassNotFoundException, UnknownHostException {
 
@@ -122,25 +124,23 @@ public class AppForm {
         client = new Client(ip.getText().toString(),port,Exc);
         //отправляем
         server = new Server( File);*/
+        try {
+          ServerSocket serverSocket = new ServerSocket(8080);
+          Socket socket = serverSocket.accept();
+          ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+          String url = inputStream.readUTF();
+          restService = new RestService();
 
-
-      //отправляем
-        try (ServerSocket serverSocket = new ServerSocket(8080)) {
-        try (Socket socket = serverSocket.accept();
-             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream())) {
+          restService.PostPhoneBooks(phoneBooks); //НО ТУТ ЧТО ТО НЕ ТО
+          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
           Gson gson = new GsonBuilder().setPrettyPrinting().create();
-          String json = gson.toJson(phoneBooks);
+          String json = "localhost:"+port+"/getphonebooks";
+          json += gson.toJson(phoneBooks);
           out.writeUTF(json);
+        } catch (IOException e1) {
+          e1.printStackTrace();
         }
-
-      }
-          catch (IOException exc) {
-        exc.printStackTrace();
-      }
     }
-
-
-
     });
   }
 
