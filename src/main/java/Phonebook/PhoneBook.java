@@ -50,13 +50,4 @@ public class PhoneBook implements Serializable {
     return Email;
   }
 
-  /*@Override
-  public String toJSONString() {
-    Map<Object , Object> PhoneBookJsonMap = new HashMap<Object , Object>();
-    PhoneBookJsonMap.put("Name",getName());
-    PhoneBookJsonMap.put("Phone",getPhone());
-    PhoneBookJsonMap.put("Email",getEmail());
-    return JSONObject.toJSONString(PhoneBookJsonMap);
-  }*/
-
 }

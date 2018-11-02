@@ -1,9 +1,6 @@
 
 
-import Phonebook.Client;
-import Phonebook.PhoneBook;
-import Phonebook.RestService;
-import Phonebook.Server;
+import Phonebook.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -19,6 +16,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Phonebook.RequestPhoneApp.GetResponseFromString;
 import static com.sun.deploy.uitoolkit.ToolkitStore.dispose;
 
 public class AppForm {
@@ -48,9 +46,6 @@ public class AppForm {
   String Exc = "";
   String[][] rowData;
   int port =8080;
-  Client client;
-  Server server;
-  RestService restService;
 
   AppForm() throws SQLException, ClassNotFoundException, UnknownHostException {
 
@@ -113,34 +108,26 @@ public class AppForm {
         } catch (Exception ex) {
           ex.printStackTrace();
         }
-
       }
     });
 
     ServerOn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-/*        //принимаем
-        client = new Client(ip.getText().toString(),port,Exc);
-        //отправляем
-        server = new Server( File);*/
         try {
           ServerSocket serverSocket = new ServerSocket(8080);
           Socket socket = serverSocket.accept();
-          ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-          String url = inputStream.readUTF();
-          restService = new RestService();
-
-          restService.PostPhoneBooks(phoneBooks); //НО ТУТ ЧТО ТО НЕ ТО
-          ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-          Gson gson = new GsonBuilder().setPrettyPrinting().create();
-          String json = "localhost:"+port+"/getphonebooks";
-          json += gson.toJson(phoneBooks);
-          out.writeUTF(json);
-        } catch (IOException e1) {
+          DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+          String request = dataInputStream.readUTF();
+          String response = RequestPhoneApp.GetResponseFromString(request,phoneBooks);
+          DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+          dos.writeUTF(response);
+        }
+        catch (IOException e1) {
           e1.printStackTrace();
         }
-    }
+
+      }
     });
   }
 
