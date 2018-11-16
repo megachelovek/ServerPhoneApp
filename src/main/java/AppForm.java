@@ -1,8 +1,6 @@
 
 
 import Phonebook.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 
 import javax.swing.*;
@@ -16,7 +14,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Phonebook.RequestPhoneApp.GetResponseFromString;
 import static com.sun.deploy.uitoolkit.ToolkitStore.dispose;
 
 public class AppForm {
@@ -114,18 +111,22 @@ public class AppForm {
     ServerOn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
+        ServerSocket serverSocket = null;
         try {
-          ServerSocket serverSocket = new ServerSocket(8080);
-          Socket socket = serverSocket.accept();
-          DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-          String request = dataInputStream.readUTF();
-          String response = RequestPhoneApp.GetResponseFromString(request,phoneBooks);
-          DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-          dos.writeUTF(response);
-        }
-        catch (IOException e1) {
+          serverSocket = new ServerSocket(8080);
+        } catch (IOException e1) {
           e1.printStackTrace();
         }
+        while (true) {
+          Socket socket = null;
+          try {
+            socket = serverSocket.accept();
+          } catch (IOException exs) {
+            exs.printStackTrace();
+          }
+          new Thread(new PhoneAppServer(socket,url,login,password)).start();
+        }
+
 
       }
     });

@@ -28,12 +28,13 @@ public class RequestPhoneApp {
           String name = line.split(" ")[1];
           String phonenumber = line.split(" ")[2];
           String email = line.split(" ")[3];
+          String imagepath = line.split(" ")[4];
           try {
             Class.forName("org.postgresql.Driver");
             Connection con = DriverManager.getConnection(url, login, password);
             Statement stmt = con.createStatement();
             try {
-              stmt.execute("INSERT INTO phonebook (name, phonenumber, email) VALUES ('" + name + "'," + phonenumber + ",'" + email + "');");
+              stmt.execute("INSERT INTO phonebook (name, phonenumber, email,imagepath) VALUES ('" + name + "'," + phonenumber + ",'" + email + "','"+imagepath+"');");
               stmt.close();
               dispose();
               response = "request_completed";
@@ -56,6 +57,31 @@ public class RequestPhoneApp {
             Statement stmt = con.createStatement();
             try {
               stmt.execute("DELETE FROM phonebook WHERE name='" + name + "'AND phonenumber=" + phonenumber + " AND email='" + email + "';");
+              stmt.close();
+              dispose();
+              response = "request_completed";
+            } finally {
+              con.close();
+            }
+          } catch (Exception ex) {
+            ex.printStackTrace();
+          }
+          return response;
+        }
+        case "EDIT": {
+          String name = line.split(" ")[1];
+          String phonenumber = line.split(" ")[2];
+          String email = line.split(" ")[3];
+          String newname = line.split(" ")[4];
+          String newphonenumber = line.split(" ")[5];
+          String newemail = line.split(" ")[6];
+          String newimagepath = line.split(" ")[7];
+          try {
+            Class.forName("org.postgresql.Driver");
+            Connection con = DriverManager.getConnection(url, login, password);
+            Statement stmt = con.createStatement();
+            try {
+              stmt.execute("UPDATE  phonebook SET name ='"+newname +"', phonenumber = '"+ newphonenumber+"', email = '"+newemail +"', imagepath = '"+ newimagepath +"' WHERE phonebook.name='" + name + "' AND phonebook.phonenumber='" + phonenumber + "' AND phonebook.email='" + email + "';");
               stmt.close();
               dispose();
               response = "request_completed";

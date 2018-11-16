@@ -11,16 +11,22 @@ public class PhoneBook implements Serializable {
   private String Name;
   private Long Phone;
   private String Email;
+  private String ImagePath;
 
   public PhoneBook(String name, Long phonenumber, String email) {
     Name = name;
     Phone = phonenumber;
     Email = email;
+    ImagePath = "";
+  }
+  public PhoneBook(String name, Long phonenumber, String email,String imagePath) {
+    Name = name;
+    Phone = phonenumber;
+    Email = email;
+    ImagePath = imagePath;
   }
 
-  public PhoneBook() {
-
-  }
+  public PhoneBook() {    }
 
   public Integer getId() {
     return Id;
@@ -48,6 +54,14 @@ public class PhoneBook implements Serializable {
 
   public String getEmail() {
     return Email;
+  }
+
+  public void setImagePath(String imagePath) {
+    ImagePath = imagePath;
+  }
+
+  public String getImagePath() {
+    return ImagePath;
   }
 
 }

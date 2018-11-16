@@ -16,6 +16,8 @@ public interface PhoneAppDAO {
 
   String EMAIL = "email";
 
+  String IMAGEPATH = "imagepath";
+
 
   void addPhoneBook(PhoneBook phonebook);
 
