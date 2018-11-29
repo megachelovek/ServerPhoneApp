@@ -19,6 +19,7 @@ public class RequestPhoneApp {
   private static String password = "admin";
 
   public static String GetResponseFromString(String line, List<PhoneBook> phoneBooks) {
+
     String response ="Error";
     if (line != null && line.length() != 0) {
       switch (line.split(" ")[0]) {
@@ -61,8 +62,10 @@ public class RequestPhoneApp {
             Statement stmt = con.createStatement();
             try {
               for (PhoneBook phoneBook: listPhoneBookMain) {
-                stmt.execute("INSERT INTO phonebook (name, phonenumber, email,imagepath) VALUES ('" + phoneBook.getName() + "'," + phoneBook.getPhone() + ",'" + phoneBook.getEmail() + "','" + phoneBook.getImagePath() + "');");
-              }
+                if (!containsPhoneBook(phoneBooks,phoneBook)) {
+                  stmt.execute("INSERT INTO phonebook (name, phonenumber, email,imagepath) VALUES ('" + phoneBook.getName() + "'," + phoneBook.getPhone() + ",'" + phoneBook.getEmail() + "','" + phoneBook.getImagePath() + "');");
+                  }
+                }
               stmt.close();
               dispose();
               response = "request_completed";
@@ -125,4 +128,14 @@ public class RequestPhoneApp {
     }
     return response;
   }
+
+  public static boolean containsPhoneBook(List<PhoneBook> list,PhoneBook phoneBook){
+    for(PhoneBook phoneBookServer : list){
+      if (phoneBookServer.getName().equals(phoneBook.getName())  && phoneBookServer.getPhone().equals(phoneBook.getPhone()) && phoneBookServer.getEmail().equals(phoneBook.getEmail()) ){
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
