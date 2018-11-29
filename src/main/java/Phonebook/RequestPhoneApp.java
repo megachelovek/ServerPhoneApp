@@ -2,10 +2,13 @@ package Phonebook;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sun.deploy.uitoolkit.ToolkitStore.dispose;
@@ -35,6 +38,31 @@ public class RequestPhoneApp {
             Statement stmt = con.createStatement();
             try {
               stmt.execute("INSERT INTO phonebook (name, phonenumber, email,imagepath) VALUES ('" + name + "'," + phonenumber + ",'" + email + "','"+imagepath+"');");
+              stmt.close();
+              dispose();
+              response = "request_completed";
+            } finally {
+              con.close();
+            }
+          } catch (Exception ex) {
+            ex.printStackTrace();
+          }
+          return response;
+
+        }
+        case "ADDLIST": {
+          String PhoneBookList = line.split(" ")[1];
+          Gson gson = new Gson();
+          Type PhoneBookListType = new TypeToken<ArrayList<PhoneBook>>(){}.getType();
+          ArrayList<PhoneBook> listPhoneBookMain = gson.fromJson(PhoneBookList,PhoneBookListType);
+          try {
+            Class.forName("org.postgresql.Driver");
+            Connection con = DriverManager.getConnection(url, login, password);
+            Statement stmt = con.createStatement();
+            try {
+              for (PhoneBook phoneBook: listPhoneBookMain) {
+                stmt.execute("INSERT INTO phonebook (name, phonenumber, email,imagepath) VALUES ('" + phoneBook.getName() + "'," + phoneBook.getPhone() + ",'" + phoneBook.getEmail() + "','" + phoneBook.getImagePath() + "');");
+              }
               stmt.close();
               dispose();
               response = "request_completed";
